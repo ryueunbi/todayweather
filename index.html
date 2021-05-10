@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today Weather</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="https://momentjs.com/downloads/moment-with-locales.js"></script>
+    <!-- favicon -->
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <!-- main css-->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Quicksand" />
+</head>
+<body>
+    <div id="weather_info">
+        <div class="section01">
+            <p class="city"></p>
+            <p class="w_id"></p>
+        </div>
+        <div class="section02">
+            <div class="icon"></div>
+        </div>
+        <div class="section03">
+            <div class="temp-detail">
+                <p class="temp_max"></p>
+                <p class="temp_min"></p>
+            </div>            
+            <p class="temp"></p>
+        </div>
+        <div class="bg"></div>
+    </div>
+
+    <script>
+        var url = 'https://api.openweathermap.org/data/2.5/weather?q=seoul&APPID=01442d87d07837359557a488107c2087';
+
+
+        $.getJSON(url, function(data){
+
+            // 날씨 데이터 객체
+            var sys = data.sys;             // 국가명, 일출/일몰
+            var city = data.name;           // 도시명
+            var weather = data.weather;     // 날씨 객체
+            var main = data.main;           // 온도 기압 관련 객체
+            
+            var wmain = weather[0].main;    // 구름 상태(Cloudiness)
+            var w_id = weather[0].id;       // 날씨 상태 id 코드
+            var icon = weather[0].icon;     // 날씨 아이콘 정보
+            var country = sys.country;      // 국가명
+            var temp = main.temp;           // 현재 온도
+            var temp_min = main.temp_min;   // 최저 온도
+            var temp_max = main.temp_max;    // 최고 온도
+            var wind_speed = data["wind"]["speed"]; // 풍속
+            var pressure = data["main"]["pressure"] // 기압
+            var bg = weather[0].icon;
+            
+
+            // // 날씨 정보 표시
+            // $('body').append( wmain + ', ' + icon + ' '
+            // + '현재온도: ' + parseInt(temp-273.15) + ' '
+            // + '최저온도: ' + parseInt(temp_min-273.15) + ' '
+            // + '최고온도: ' + parseInt(temp_max-273.15) + ' '
+            // + country + ' ' + city + ' ' + w_id + ' ' + '<br>');
+
+            // // 날씨 아이콘 표시
+            // var icon_url='http://openweathermap.org/img/w/'+icon;
+            // $('body').append("<img src='" + icon_url + ".png'>");
+
+            var icon_url='images/'+icon;
+            var bg_url='images/'+bg;
+
+            $("#weather_info .city").html(city+"/"+country);
+            $("#weather_info .icon").html("<img src='"+icon_url+".png'>");
+            $("#weather_info .bg").html("<img src='"+bg_url+"bg.png'>");
+
+            $("#weather_info .w_id").html(wmain);
+            $("#weather_info .temp_min").html("min "+parseInt(+temp_min-273.15)+'&deg;');
+            $("#weather_info .temp_max").html("max "+parseInt(temp_max-273.15)+'&deg;');
+            $("#weather_info .temp").html(parseInt(temp-273.15)+'&deg;');
+            $(".wind-spd").html(wind_speed+"m/s");
+            $(".pressure").html(pressure + "mBar");
+        });
+        // end getJSON()
+    </script>
+</body>
+</html>
